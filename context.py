@@ -14,14 +14,14 @@ class Context:
                  rate_limit_seconds: int = 5, 
                  rate_limit_jitter: float = float(1), 
                  wplace_instance: WPlace = WPlace(),
-                 store_dir: Path = DEFAULT_STORE_DIR) -> None:
+                 store_dir: Path | str = DEFAULT_STORE_DIR) -> None:
         
         self.tiles: Dict[str, BytesIO] = {}
         self.tile_range: VecRange = tile_range
         self.rate_limit: int = rate_limit_seconds
         self.jitter: float = rate_limit_jitter
         self.wplace: WPlace = wplace_instance
-        self.store_dir: Path = store_dir
+        self.store_dir: Path = store_dir if type(store_dir) == Path else Path(store_dir)
 
     def __get_delay(self) -> float:
         return random.uniform(-(self.jitter/2), self.jitter/2) + self.rate_limit
