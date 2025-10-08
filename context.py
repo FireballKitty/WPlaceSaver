@@ -42,13 +42,16 @@ class Context:
     
     def save_all_tiles(self, with_timestamp: bool = False, format: str = "png"):
         self.store_dir.mkdir(parents=True, exist_ok=True)
+        
+        if with_timestamp:
+            curr_time: str = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+            save_dir: Path = Path.joinpath(self.store_dir, curr_time)
+            save_dir.mkdir(parents=True, exist_ok=True)
+        else:
+            save_dir: Path = self.store_dir
 
         for coord_str, image in self.tiles.items():
-            if with_timestamp:
-                filename = f"{coord_str}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.{format}"
-            else:
-                filename = f"{coord_str}.{format}"
-            filepath = Path.joinpath(self.store_dir, filename)
+            filepath = Path.joinpath(save_dir, f"{coord_str}.{format}")
             
             with open(filepath, "wb") as file:
                 file.write(image.read())
